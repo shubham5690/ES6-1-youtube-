@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #results{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 20px;
+            
+        }
+        #results>div{
+            border: 3px solid red;
+
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube!</h1>
+    <input type="text" id="query" >
+    <button onclick="search()" >Search</button>
+    <div id="results"></div>
+    
+</body>
+</html>
+<script>
+     let api ='AIzaSyDghDtfi5BENIFgfNBcCIbOhBo2YsoNamY'
+    //  let url='https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${query}&key=AIzaSyDghDtfi5BENIFgfNBcCIbOhBo2YsoNamY'
+
+     let search=async() =>{
+         try{
+            let query=document.getElementById('query').value
+         let url=`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${query}&key=${api}`
+         let res= await fetch(url);
+         let data= await res.json()
+         append(data.items)
+        //  console.log(data)
+     } catch(err){
+         console.log(err)
+     }
+
+         }
+
+    let append=(data)=>{
+        let container=document.getElementById('results');
+        console.log(data)
+        data.forEach(({id:{videoId},snippet:{title,thumbnails}}) => {
+            let div=document.createElement('div')
+            let iframe=document.createElement('iframe');
+            iframe.src=`https://www.youtube.com/embed/${videoId}`
+            iframe.allow='fullscreen'
+
+            let t = document.createElement("h3");
+            t.innerText = title;
+
+            div.append(iframe,t)
+
+            let video = {
+                title,
+                videoId,
+                };
+
+            div.onclick= () =>{
+                playVideo(video)
+            };
+            container.append(div)
+
+
+        })
+    } 
+    let playVideo = (video) =>{
+        localStorage.setItem("video", JSON.stringify(video));
+        window.location.href='youtube.html'
+    }    
+
+        //  <iframe width="560" height="315" 
+        //  src="https://www.youtube.com/embed/I0-IiiVgvyU" 
+        //  title="YouTube video player" 
+        //  frameborder="0" 
+        //  allow="accelerometer; 
+        //  autoplay; clipboard-write; 
+        //  encrypted-media; gyroscope; 
+        //  picture-in-picture" 
+        //  allowfullscreen>
+        //  </iframe>
+         
+</script>
+    
